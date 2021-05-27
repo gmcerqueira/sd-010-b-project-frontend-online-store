@@ -30,9 +30,9 @@ export default class Home extends Component {
         </p>
         <section>
           {categories.map(({ name }, i) => (
-            <p key={ i } data-testid="category">
+            <div key={ i } data-testid="category">
               {name}
-            </p>
+            </div>
           ))}
         </section>
         <section>
