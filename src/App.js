@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
-import Cart from './components/Cart';
-import Home from './components/Home';
+import Cart from './pages/Cart';
+import Home from './pages/Home';
 import * as api from './services/api';
 
 export default class App extends Component {
@@ -11,6 +11,8 @@ export default class App extends Component {
 
     this.state = {
       categories: [],
+      searchInput: '',
+      searchedProducts: [],
     };
   }
 
@@ -22,23 +24,45 @@ export default class App extends Component {
     const categories = await api.getCategories();
 
     this.setState({ categories });
+  };
+
+  handleChange = ({ target }) => {
+    const { name, value } = target;
+    this.setState({ [name]: value });
+  };
+
+  searchProduct = async () => {
+    const { searchInput } = this.state;
+    const response = await api.getProductsFromCategoryAndQuery('', searchInput);
+    const products = response.results;
+
+    this.setState({ searchedProducts: products });
   }
 
   rendersRoutes = () => {
-    const { categories } = this.state;
+    const { categories, searchedProducts } = this.state;
     return (
       <Router>
         <Switch>
           <Route path="/cart" component={ Cart } />
-          <Route exact path="/" render={ () => <Home categories={ categories } /> } />
+          <Route
+            exact
+            path="/"
+            render={ () => (
+              <Home
+                categories={ categories }
+                searchProduct={ this.searchProduct }
+                onChange={ this.handleChange }
+                products={ searchedProducts }
+              />
+            ) }
+          />
         </Switch>
       </Router>
     );
-  }
+  };
 
   render() {
-    return (
-      <div>{this.rendersRoutes()}</div>
-    );
+    return <div>{this.rendersRoutes()}</div>;
   }
 }
