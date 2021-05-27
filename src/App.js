@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
 import Cart from './pages/Cart';
 import Home from './pages/Home';
+import ProductDetails from './pages/ProductDetails.js';
 import * as api from './services/api';
 
 export default class App extends Component {
@@ -50,12 +51,16 @@ export default class App extends Component {
     this.setState({ searchedProducts: products });
   };
 
-  rendersRoutes = () => {
+  render() {
     const { categories, searchedProducts } = this.state;
     return (
       <Router>
         <Switch>
           <Route path="/cart" component={ Cart } />
+          <Route
+            path="/product/:id"
+            render={ (props) => (<ProductDetails { ...props } />) }
+          />
           <Route
             exact
             path="/"
@@ -72,9 +77,5 @@ export default class App extends Component {
         </Switch>
       </Router>
     );
-  };
-
-  render() {
-    return <div>{this.rendersRoutes()}</div>;
   }
 }

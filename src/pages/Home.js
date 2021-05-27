@@ -39,7 +39,7 @@ export default class Home extends Component {
           ))}
         </section>
         <section>
-          {products && products.map((product) => (
+          {products.map((product) => (
             <ProductCard key={ product.id } product={ product } />
           ))}
         </section>
