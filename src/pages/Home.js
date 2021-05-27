@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import CategoryFilter from '../components/CategoryFilter.js';
 import ProductCard from '../components/ProductCard.js';
 
 export default class Home extends Component {
   render() {
-    const { categories, searchProduct, onChange, products } = this.props;
+    const { categories, searchProduct, onChange, products, selectCategory } = this.props;
     return (
       <div>
         <Link to="/cart" data-testid="shopping-cart-button">
@@ -29,14 +30,16 @@ export default class Home extends Component {
           Digite algum termo de pesquisa ou escolha uma categoria.
         </p>
         <section>
-          {categories.map(({ name }, i) => (
-            <div key={ i } data-testid="category">
-              {name}
-            </div>
+          {categories.map((category) => (
+            <CategoryFilter
+              key={ category.id }
+              category={ category }
+              selectCategory={ selectCategory }
+            />
           ))}
         </section>
         <section>
-          {products.map((product) => (
+          {products && products.map((product) => (
             <ProductCard key={ product.id } product={ product } />
           ))}
         </section>

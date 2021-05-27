@@ -13,11 +13,16 @@ export default class App extends Component {
       categories: [],
       searchInput: '',
       searchedProducts: [],
+      selectedCategory: '',
     };
   }
 
   componentDidMount() {
     this.fetchCategories();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+
   }
 
   fetchCategories = async () => {
@@ -31,13 +36,19 @@ export default class App extends Component {
     this.setState({ [name]: value });
   };
 
+  handleCategoryChange = async ({ target }) => {
+    const response = await api.getProductsFromCategoryAndQuery(target.id);
+    const products = response.results;
+    this.setState({ selectedCategory: target.id, searchedProducts: products });
+  };
+
   searchProduct = async () => {
     const { searchInput } = this.state;
     const response = await api.getProductsFromCategoryAndQuery('', searchInput);
     const products = response.results;
 
     this.setState({ searchedProducts: products });
-  }
+  };
 
   rendersRoutes = () => {
     const { categories, searchedProducts } = this.state;
@@ -54,6 +65,7 @@ export default class App extends Component {
                 searchProduct={ this.searchProduct }
                 onChange={ this.handleChange }
                 products={ searchedProducts }
+                selectCategory={ this.handleCategoryChange }
               />
             ) }
           />
