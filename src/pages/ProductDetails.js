@@ -21,14 +21,21 @@ export default class ProductDetails extends Component {
   }
 
   render() {
+    const { addToCart } = this.props;
     const { product } = this.state;
     return (
       <section>
-        <h3 data-testid="product-detail-name">
-          {product.title}
-        </h3>
+        <h3 data-testid="product-detail-name">{product.title}</h3>
         <h4>{product.price}</h4>
         <img src={ product.thumbnail } alt="" />
+        <button
+          id={ product.id }
+          type="button"
+          data-testid="product-add-to-cart"
+          onClick={ addToCart }
+        >
+          add
+        </button>
       </section>
     );
   }

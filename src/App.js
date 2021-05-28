@@ -89,7 +89,9 @@ export default class App extends Component {
           />
           <Route
             path="/product/:id"
-            render={ (props) => <ProductDetails { ...props } /> }
+            render={ (props) => (
+              <ProductDetails addToCart={ this.addToCart } { ...props } />
+            ) }
           />
           <Route
             exact
