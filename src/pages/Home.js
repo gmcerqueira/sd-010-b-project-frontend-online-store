@@ -5,7 +5,14 @@ import ProductCard from '../components/ProductCard.js';
 
 export default class Home extends Component {
   render() {
-    const { categories, searchProduct, onChange, products, selectCategory } = this.props;
+    const {
+      categories,
+      searchProduct,
+      onChange,
+      products,
+      selectCategory,
+      addToCart,
+    } = this.props;
     return (
       <div>
         <Link to="/cart" data-testid="shopping-cart-button">
@@ -40,7 +47,11 @@ export default class Home extends Component {
         </section>
         <section>
           {products.map((product) => (
-            <ProductCard key={ product.id } product={ product } />
+            <ProductCard
+              key={ product.id }
+              product={ product }
+              addToCart={ addToCart }
+            />
           ))}
         </section>
       </div>

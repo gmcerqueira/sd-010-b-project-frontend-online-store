@@ -15,6 +15,8 @@ export default class App extends Component {
       searchInput: '',
       searchedProducts: [],
       selectedCategory: '',
+      cart: [],
+      productsWithQuantity: [],
     };
   }
 
@@ -23,7 +25,6 @@ export default class App extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-
   }
 
   fetchCategories = async () => {
@@ -51,15 +52,44 @@ export default class App extends Component {
     this.setState({ searchedProducts: products });
   };
 
+  addToCart = ({ target: { id } }) => {
+    const { searchedProducts, cart } = this.state;
+    const productToAdd = searchedProducts.find((product) => product.id === id);
+    this.setState({ cart: [...cart, productToAdd] }, () => {
+      this.calcQuantity();
+    });
+  }
+
+  calcQuantity = () => {
+    const { cart } = this.state;
+    const quantity = cart.reduce((previous, current) => {
+      const key = current.id;
+      if (!previous[key]) {
+        previous[key] = [];
+      }
+      previous[key].push(current);
+      return previous;
+    }, {});
+    const products = Object.values(quantity).map((item) => ({
+      product: item[0],
+      quantity: item.length,
+    }));
+
+    this.setState({ productsWithQuantity: products });
+  }
+
   render() {
-    const { categories, searchedProducts } = this.state;
+    const { categories, searchedProducts, productsWithQuantity } = this.state;
     return (
       <Router>
         <Switch>
-          <Route path="/cart" component={ Cart } />
+          <Route
+            path="/cart"
+            render={ () => <Cart cart={ productsWithQuantity } /> }
+          />
           <Route
             path="/product/:id"
-            render={ (props) => (<ProductDetails { ...props } />) }
+            render={ (props) => <ProductDetails { ...props } /> }
           />
           <Route
             exact
@@ -71,6 +101,7 @@ export default class App extends Component {
                 onChange={ this.handleChange }
                 products={ searchedProducts }
                 selectCategory={ this.handleCategoryChange }
+                addToCart={ this.addToCart }
               />
             ) }
           />
