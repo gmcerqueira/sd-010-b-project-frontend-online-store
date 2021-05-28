@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
 import Cart from './pages/Cart';
 import Home from './pages/Home';
-import ProductDetails from './pages/ProductDetails.js';
+import ProductDetails from './pages/ProductDetails';
 import * as api from './services/api';
 
 export default class App extends Component {
@@ -57,6 +57,14 @@ export default class App extends Component {
 
   calcQuantity = () => {
     const { cart } = this.state;
+
+    // const retornoNegativo = -1;
+    // cart.sort((a, b) => {
+    //   if (a.title < b.title) return retornoNegativo;
+    //   if (a.title > b.title) return 1;
+    //   return 0;
+    // });
+
     const quantity = cart.reduce((previous, current) => {
       const key = current.id;
       if (!previous[key]) {
@@ -75,9 +83,11 @@ export default class App extends Component {
 
   handleIncreaseQuantity = ({ target }) => {
     const { productsWithQuantity, cart } = this.state;
+
     const search = productsWithQuantity.find(
       ({ item }) => item.id === target.id,
     );
+
     const product = search.item;
 
     this.setState({ cart: [...cart, product] }, () => this.calcQuantity());
@@ -90,49 +100,63 @@ export default class App extends Component {
     );
     const product = search.item;
 
-    const index = cart.findIndex((item) => item.id === product.id);
+    const index = cart.map((item) => item.id).lastIndexOf(product.id);
+    console.log(index);
     cart.splice(index, 1);
     this.setState({ cart }, () => this.calcQuantity());
   }
-  // handleRemoveFromCart=()=>{}
 
-  render() {
-    const { categories, searchedProducts, productsWithQuantity } = this.state;
-    return (
-      <Router>
-        <Switch>
-          <Route
-            path="/cart"
-            render={ () => (
-              <Cart
-                cart={ productsWithQuantity }
-                plusCart={ this.handleIncreaseQuantity }
-                minusCart={ this.handleDecreaseQuantity }
-              />
-            ) }
-          />
-          <Route
-            path="/product/:id"
-            render={ (props) => (
-              <ProductDetails addToCart={ this.addToCart } { ...props } />
-            ) }
-          />
-          <Route
-            exact
-            path="/"
-            render={ () => (
-              <Home
-                categories={ categories }
-                searchProduct={ this.searchProduct }
-                onChange={ this.handleChange }
-                products={ searchedProducts }
-                selectCategory={ this.handleCategoryChange }
-                addToCart={ this.addToCart }
-              />
-            ) }
-          />
-        </Switch>
-      </Router>
-    );
-  }
+    handleRemoveFromCart = ({ target }) => {
+      const { cart } = this.state;
+      const newCart = cart.filter(({ id }) => id !== target.id);
+
+      this.setState({ cart: newCart }, () => this.calcQuantity());
+    }
+
+    render() {
+      const { categories, searchedProducts, productsWithQuantity } = this.state;
+      return (
+        <Router>
+          <Switch>
+            <Route
+              path="/cart"
+              render={ () => (
+                <Cart
+                  cart={ productsWithQuantity }
+                  plusCart={ this.handleIncreaseQuantity }
+                  minusCart={ this.handleDecreaseQuantity }
+                  removeCart={ this.handleRemoveFromCart }
+                />
+              ) }
+            />
+            <Route
+              path="/product/:id"
+              render={ (props) => (
+                <ProductDetails
+                  plusCart={ this.handleIncreaseQuantity }
+                  minusCart={ this.handleDecreaseQuantity }
+                  removeCart={ this.handleRemoveFromCart }
+                  addToCart={ this.addToCart }
+                  { ...props }
+                />
+              ) }
+            />
+            <Route
+              exact
+              path="/"
+              render={ () => (
+                <Home
+                  categories={ categories }
+                  searchProduct={ this.searchProduct }
+                  onChange={ this.handleChange }
+                  products={ searchedProducts }
+                  selectCategory={ this.handleCategoryChange }
+                  addToCart={ this.addToCart }
+                />
+              ) }
+            />
+          </Switch>
+        </Router>
+      );
+    }
 }

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Amount from '../components/Amount';
 
 export default class Cart extends Component {
   render() {
@@ -10,15 +11,12 @@ export default class Cart extends Component {
           <div key={ item.id }>
             <h3 data-testid="shopping-cart-product-name">{item.title}</h3>
             <span data-testid="shopping-cart-product-quantity">{quantity}</span>
-            <button id={ item.id } type="button" onClick={ plusCart }>
-              +
-            </button>
-            <button id={ item.id } type="button" onClick={ minusCart }>
-              -
-            </button>
-            <button id={ item.id } type="button" onClick={ removeCart }>
-              x
-            </button>
+            <Amount
+              id={ item.id }
+              plusCart={ plusCart }
+              minusCart={ minusCart }
+              removeCart={ removeCart }
+            />
           </div>
         ))}
       </div>

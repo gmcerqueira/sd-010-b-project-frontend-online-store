@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Amount from '../components/Amount';
 import CartButton from '../components/CartButton';
 import * as auxApi from '../services/auxApi';
 
@@ -22,7 +23,7 @@ export default class ProductDetails extends Component {
   }
 
   render() {
-    const { addToCart } = this.props;
+    const { match: { params: { id } }, addToCart, plusCart, minusCart, removeCart } = this.props;
     const { product } = this.state;
     return (
       <div>
@@ -39,6 +40,12 @@ export default class ProductDetails extends Component {
           >
             add
           </button>
+          {/* <Amount
+            id={ id }
+            plusCart={ plusCart }
+            minusCart={ minusCart }
+            removeCart={ removeCart }
+          /> */}
         </section>
       </div>
     );
