@@ -92,9 +92,9 @@ export default class App extends Component {
 
     const index = cart.findIndex((item) => item.id === product.id);
     cart.splice(index, 1);
-    this.setState({ cart });
+    this.setState({ cart }, () => this.calcQuantity());
   }
-  // handleRemoveFromCart;
+  // handleRemoveFromCart=()=>{}
 
   render() {
     const { categories, searchedProducts, productsWithQuantity } = this.state;
@@ -107,6 +107,7 @@ export default class App extends Component {
               <Cart
                 cart={ productsWithQuantity }
                 plusCart={ this.handleIncreaseQuantity }
+                minusCart={ this.handleDecreaseQuantity }
               />
             ) }
           />
