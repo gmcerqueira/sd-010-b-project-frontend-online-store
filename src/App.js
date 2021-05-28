@@ -24,9 +24,6 @@ export default class App extends Component {
     this.fetchCategories();
   }
 
-  componentDidUpdate(prevProps, prevState) {
-  }
-
   fetchCategories = async () => {
     const categories = await api.getCategories();
 
@@ -55,10 +52,8 @@ export default class App extends Component {
   addToCart = ({ target: { id } }) => {
     const { searchedProducts, cart } = this.state;
     const productToAdd = searchedProducts.find((product) => product.id === id);
-    this.setState({ cart: [...cart, productToAdd] }, () => {
-      this.calcQuantity();
-    });
-  }
+    this.setState({ cart: [...cart, productToAdd] }, () => this.calcQuantity());
+  };
 
   calcQuantity = () => {
     const { cart } = this.state;
@@ -71,12 +66,35 @@ export default class App extends Component {
       return previous;
     }, {});
     const products = Object.values(quantity).map((item) => ({
-      product: item[0],
+      item: item[0],
       quantity: item.length,
     }));
 
     this.setState({ productsWithQuantity: products });
+  };
+
+  handleIncreaseQuantity = ({ target }) => {
+    const { productsWithQuantity, cart } = this.state;
+    const search = productsWithQuantity.find(
+      ({ item }) => item.id === target.id,
+    );
+    const product = search.item;
+
+    this.setState({ cart: [...cart, product] }, () => this.calcQuantity());
   }
+
+  handleDecreaseQuantity=({ target }) => {
+    const { productsWithQuantity, cart } = this.state;
+    const search = productsWithQuantity.find(
+      ({ item }) => item.id === target.id,
+    );
+    const product = search.item;
+
+    const index = cart.findIndex((item) => item.id === product.id);
+    cart.splice(index, 1);
+    this.setState({ cart });
+  }
+  // handleRemoveFromCart;
 
   render() {
     const { categories, searchedProducts, productsWithQuantity } = this.state;
@@ -85,7 +103,12 @@ export default class App extends Component {
         <Switch>
           <Route
             path="/cart"
-            render={ () => <Cart cart={ productsWithQuantity } /> }
+            render={ () => (
+              <Cart
+                cart={ productsWithQuantity }
+                plusCart={ this.handleIncreaseQuantity }
+              />
+            ) }
           />
           <Route
             path="/product/:id"
