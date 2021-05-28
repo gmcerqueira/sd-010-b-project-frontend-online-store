@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import CategoryFilter from '../components/CategoryFilter.js';
-import ProductCard from '../components/ProductCard.js';
+import CartButton from '../components/CartButton';
+import CategoryFilter from '../components/CategoryFilter';
+import ProductCard from '../components/ProductCard';
 
 export default class Home extends Component {
   render() {
@@ -15,9 +15,7 @@ export default class Home extends Component {
     } = this.props;
     return (
       <div>
-        <Link to="/cart" data-testid="shopping-cart-button">
-          cart
-        </Link>
+        <CartButton />
         <label htmlFor="search">
           <input
             name="searchInput"

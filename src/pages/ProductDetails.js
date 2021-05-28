@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import CartButton from '../components/CartButton';
 import * as auxApi from '../services/auxApi';
 
 export default class ProductDetails extends Component {
@@ -26,9 +26,7 @@ export default class ProductDetails extends Component {
     const { product } = this.state;
     return (
       <div>
-        <Link to="/cart" data-testid="shopping-cart-button">
-          cart
-        </Link>
+        <CartButton />
         <section>
           <h3 data-testid="product-detail-name">{product.title}</h3>
           <h4>{product.price}</h4>
